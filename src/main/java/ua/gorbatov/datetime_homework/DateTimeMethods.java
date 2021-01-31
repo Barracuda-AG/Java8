@@ -114,7 +114,7 @@ public class DateTimeMethods {
         List<ZoneId> result = new ArrayList<>();
         for (ZoneId zone : zones) {
             int years = yearsWhenClockShifted(zone);
-            if (years > 0 && years < 120) {
+            if (years > 0 && years < 121) {
                 result.add(zone);
             }
         }
@@ -129,7 +129,7 @@ public class DateTimeMethods {
             ZonedDateTime nextDay = start.plusDays(1);
             long hours = Duration.between(start, nextDay).toHours();
             if (hours != 24) {
-                years.add(Year.of(start.getYear()));
+               years.add(Year.of(start.getYear()));
             }
             start = start.plusDays(1);
         }
