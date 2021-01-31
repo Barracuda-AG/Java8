@@ -3,23 +3,28 @@ package ua.gorbatov.datetime_homework;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.time.Year;
-import java.time.YearMonth;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DateTimeMethodsTest {
     private DateTimeMethods dateTimeMethods;
     private List<String> fridays13Expected;
     private List<YearMonth> endOnSundaysExpected;
     private List<Year> birthdaysOnSaturdaysExpected;
+    private List<MonthDay> daysNotWith24HoursInUkraine;
+    private List<ZoneId> timeZones;
+    private List<ZoneId> timeZonesAlwaysShift;
+    private List<ZoneId> timeZonesNeverShift;
+    private List<ZoneId> timeZonesSometimesShift;
 
     @BeforeEach
     void setUp(){
         dateTimeMethods = new DateTimeMethods();
+
         fridays13Expected =  new ArrayList<>();
         fridays13Expected.add("Oct 2000");
         fridays13Expected.add("Apr 2001");
@@ -102,6 +107,32 @@ class DateTimeMethodsTest {
         birthdaysOnSaturdaysExpected.add(Year.of(2004));
         birthdaysOnSaturdaysExpected.add(Year.of(2010));
 
+        daysNotWith24HoursInUkraine = new ArrayList<>();
+        daysNotWith24HoursInUkraine.add(MonthDay.of(10,25));
+        daysNotWith24HoursInUkraine.add(MonthDay.of(3,29));
+
+        timeZones = new ArrayList<>();
+        timeZones.add(ZoneId.of("Asia/Dubai"));
+        timeZones.add(ZoneId.of("Indian/Maldives"));
+        timeZones.add(ZoneId.of("Europe/Helsinki"));
+        timeZones.add(ZoneId.of("Asia/Colombo"));
+        timeZones.add(ZoneId.of("Europe/Moscow"));
+        timeZones.add(ZoneId.of("SystemV/CST6CDT"));
+        timeZones.add(ZoneId.of("SystemV/EST5EDT"));
+
+        timeZonesAlwaysShift = new ArrayList<>();
+        timeZonesAlwaysShift.add(ZoneId.of("SystemV/CST6CDT"));
+        timeZonesAlwaysShift.add(ZoneId.of("SystemV/EST5EDT"));
+
+        timeZonesNeverShift = new ArrayList<>();
+        timeZonesNeverShift.add(ZoneId.of("Asia/Dubai"));
+        timeZonesNeverShift.add(ZoneId.of("Indian/Maldives"));
+
+        timeZonesSometimesShift = new ArrayList<>();
+        timeZonesSometimesShift.add(ZoneId.of("Europe/Helsinki"));
+        timeZonesSometimesShift.add(ZoneId.of("Europe/Moscow"));
+        timeZonesSometimesShift.add(ZoneId.of("Asia/Colombo"));
+
     }
     @Test
     void fridays13() {
@@ -122,6 +153,35 @@ class DateTimeMethodsTest {
         LocalDate birthDay = LocalDate.of(1990, 6, 12);
         List<Year> actual = dateTimeMethods.birthdaysOnSaturdays(birthDay);
         assertTrue(actual.containsAll(birthdaysOnSaturdaysExpected));
+
+    }
+
+    @Test
+    void daysNotWith24Hours() {
+        List<MonthDay> actual = dateTimeMethods.daysNotWith24Hours(Year.of(2020));
+        assertEquals(actual.size(), daysNotWith24HoursInUkraine.size());
+        assertTrue(actual.containsAll(daysNotWith24HoursInUkraine));
+    }
+
+    @Test
+    void zonesAlwaysClockShift() {
+        List<ZoneId> actual = dateTimeMethods.zonesAlwaysClockShift(timeZonesAlwaysShift);
+        assertEquals(actual.size(),timeZonesAlwaysShift.size());
+        assertTrue(actual.containsAll(timeZonesAlwaysShift));
+    }
+
+    @Test
+    void zonesNeverClockShift() {
+        List<ZoneId> actual = dateTimeMethods.zonesNeverClockShift(timeZones);
+        assertEquals(actual.size(),timeZonesNeverShift.size());
+        assertTrue(actual.containsAll(timeZonesNeverShift));
+    }
+
+    @Test
+    void zonesChangedClockShiftRules() {
+        List<ZoneId> actual = dateTimeMethods.zonesChangedClockShiftRules(timeZones);
+        assertEquals(actual.size(),timeZonesSometimesShift.size());
+        assertTrue(actual.containsAll(timeZonesSometimesShift));
 
     }
 }
