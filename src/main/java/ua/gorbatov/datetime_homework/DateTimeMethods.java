@@ -4,6 +4,8 @@ package ua.gorbatov.datetime_homework;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class DateTimeMethods {
     /**
@@ -89,36 +91,19 @@ public class DateTimeMethods {
      * где в одни годы был, в другие - нет. Проверяем от 1900 года до сегодня.
      */
     public List<ZoneId> zonesAlwaysClockShift(List<ZoneId> zones) {
-        List<ZoneId> result = new ArrayList<>();
-        for (ZoneId zone : zones) {
-            int years = yearsWhenClockShifted(zone);
-            if (years == 121) {
-                result.add(zone);
-            }
-        }
-        return result;
+      return shift(zones, year -> year == 121);
     }
 
     public List<ZoneId> zonesNeverClockShift(List<ZoneId> zones) {
-        List<ZoneId> result = new ArrayList<>();
-        for (ZoneId zone : zones) {
-            int years = yearsWhenClockShifted(zone);
-            if (years == 0) {
-                result.add(zone);
-            }
-        }
-        return result;
+       return shift(zones, year -> year == 0);
     }
 
     public List<ZoneId> zonesChangedClockShiftRules(List<ZoneId> zones) {
-        List<ZoneId> result = new ArrayList<>();
-        for (ZoneId zone : zones) {
-            int years = yearsWhenClockShifted(zone);
-            if (years > 0 && years < 121) {
-                result.add(zone);
-            }
-        }
-        return result;
+        return shift(zones, year -> year > 0 && year < 121);
+    }
+
+    public List<ZoneId> shift(List<ZoneId> zones, Predicate<Integer> predicate){
+       return zones.stream().filter(zone -> predicate.test(yearsWhenClockShifted(zone))).collect(Collectors.toList());
     }
 
     private int yearsWhenClockShifted(ZoneId zoneId) {
