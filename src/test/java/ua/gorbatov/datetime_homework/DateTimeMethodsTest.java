@@ -99,7 +99,7 @@ class DateTimeMethodsTest {
         endOnSundaysExpected.add(YearMonth.of(2019, 3));
         endOnSundaysExpected.add(YearMonth.of(2019, 6));
         endOnSundaysExpected.add(YearMonth.of(2020, 5));
-       // endOnSundaysExpected.add(YearMonth.of(2021, 1));
+        endOnSundaysExpected.add(YearMonth.of(2021, 1));
 
         birthdaysOnSaturdaysExpected = new ArrayList<>();
         birthdaysOnSaturdaysExpected.add(Year.of(1993));
